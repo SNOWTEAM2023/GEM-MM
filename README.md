@@ -1,3 +1,4 @@
+
 <h1 align="center">GEM-MM: Entropy-Guided Preference Alignment for Vision-Language Models</h1>
 
 <p align="center">
@@ -154,7 +155,7 @@ A conservative operating point (`λ=2.5`, `τ=0.8`) raises near-chosen rate to *
 
 **Protocol.** Backbone **Qwen3-VL-4B-Instruct** · **3000** MM-RLHF train IDs · **1000** held-out pairs · same chat template / token budget for all systems · **full fine-tune**.
 
-Baselines: SFT, MM-DPO, mDPO, SIMA (heuristic self-improvement family).
+Baselines: SFT, MM-DPO, mDPO, SIMA.
 
 | Method | Depth Pref % | Implicit rew. % | A/B % | AMBER Hal ↓ | CHAIR ↓ |
 |--------|:------------:|:---------------:|:-----:|:-----------:|:-------:|
