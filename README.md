@@ -87,7 +87,6 @@ A tiny demo file is provided at `data/preference_data.jsonl`. Put images under `
 **Paper datasets** (not redistributed here; obtain from the original sources):
 
 1. **[MM-RLHF](https://github.com/Kwai-Keye/MM-RLHF)** — primary corpus. We use the first **3000** unique short-prompt IDs for training and IDs **3001–4000** for held-out preference evaluation.
-2. **[RLAIF-V](https://huggingface.co/datasets/openbmb/RLAIF-V-Dataset)** — transfer / negative-transfer study in the paper appendix.
 
 You can also plug in custom multimodal pairs in the same `(prompt, image, chosen, rejected)` format.
 
@@ -190,7 +189,7 @@ Baselines: SFT, MM-DPO, mDPO, SIMA (heuristic self-improvement family).
 | Input | `q` | `x = (x_I, x_Q)` |
 | Backbone (paper) | LLM few-shot | Qwen3-VL-4B-Instruct |
 | Core loop | Cognitive Filtering + SEGA | Same, with vision tokens + VLM decoding |
-| Data | Skywork / medical prefs | MM-RLHF (primary), RLAIF-V (transfer) |
+| Data | Skywork / medical prefs | MM-RLHF (primary) |
 
 Please cite **both** this work and the original GEM paper when appropriate.
 
