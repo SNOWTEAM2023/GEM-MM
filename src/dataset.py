@@ -1,15 +1,4 @@
-"""Multimodal preference dataset for GEM-MM.
-
-Expected JSONL fields (one object per line):
-  {
-    "id": ...,
-    "prompt": "...",          # text question / instruction
-    "image": "rel/path.jpg",  # path under image_root (optional for text-only smoke)
-    "chosen": "...",
-    "rejected": "..."
-  }
-"""
-
+"""Multimodal preference dataset. SFT targets ``chosen``; SEGA uses the prompt."""
 from __future__ import annotations
 
 import json
@@ -17,6 +6,8 @@ import os
 from typing import Any
 
 from torch.utils.data import Dataset
+
+from src.message_utils import build_messages, prepare_multimodal_inputs
 
 
 class MultimodalPreferenceDataset(Dataset):
@@ -27,6 +18,7 @@ class MultimodalPreferenceDataset(Dataset):
         processor: Any,
         config: Any,
         mode: str = "sft",
+        max_samples: int = 0,
     ) -> None:
         self.image_root = image_root
         self.processor = processor
@@ -38,28 +30,54 @@ class MultimodalPreferenceDataset(Dataset):
                 line = line.strip()
                 if line:
                     self.rows.append(json.loads(line))
+        if max_samples and max_samples > 0:
+            self.rows = self.rows[:max_samples]
 
     def __len__(self) -> int:
         return len(self.rows)
 
-    def _image_path(self, row: dict) -> str | None:
+    def _image_path(self, row: dict) -> str:
         rel = row.get("image") or row.get("image_path")
         if not rel:
-            return None
-        if os.path.isabs(rel):
-            return rel
-        return os.path.join(self.image_root, rel)
+            raise FileNotFoundError("row is missing an image path")
+        path = rel if os.path.isabs(rel) else os.path.join(self.image_root, rel)
+        if not os.path.isfile(path):
+            raise FileNotFoundError(f"Image not found: {path}")
+        return path
+
+    def _encode(self, system_prompt: str, prompt: str, image_path: str, assistant: str | None):
+        messages = build_messages(system_prompt, prompt, image_path, include_assistant=assistant)
+        inputs, _ = prepare_multimodal_inputs(self.processor, messages)
+        return inputs
 
     def __getitem__(self, idx: int) -> dict:
         row = self.rows[idx]
-        prompt = row["prompt"]
-        # SFT uses chosen; SEGA generation uses the prompt (+ image) only.
-        target = row.get("chosen", "") if self.mode == "sft" else ""
+        prompt = row.get("prompt") or row.get("question") or ""
+        image_path = self._image_path(row)
+        if self.mode == "sft":
+            target = str(row.get("chosen") or row.get("answer") or "").strip()
+            full = self._encode(self.config.sft_system_prompt, prompt, image_path, target)
+            prompt_only = self._encode(self.config.sft_system_prompt, prompt, image_path, None)
+            input_ids = full["input_ids"]
+            labels = input_ids.clone()
+            prompt_len = int(prompt_only["input_ids"].shape[1])
+            labels[:, :prompt_len] = -100
+            return {
+                "input_ids": input_ids,
+                "attention_mask": full["attention_mask"],
+                "labels": labels,
+                "pixel_values": full.get("pixel_values"),
+                "image_grid_thw": full.get("image_grid_thw"),
+            }
+
+        system = self.config.system_prompt
+        inputs = self._encode(system, prompt, image_path, None)
         return {
-            "id": row.get("id", idx),
+            "input_ids": inputs["input_ids"],
+            "attention_mask": inputs["attention_mask"],
+            "pixel_values": inputs.get("pixel_values"),
+            "image_grid_thw": inputs.get("image_grid_thw"),
+            "prompt_len": int(inputs["input_ids"].shape[1]),
             "prompt": prompt,
-            "image_path": self._image_path(row),
-            "chosen": row.get("chosen", ""),
-            "rejected": row.get("rejected", ""),
-            "target": target,
+            "image_path": image_path,
         }

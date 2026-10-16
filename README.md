@@ -103,7 +103,7 @@ python GEM_MM.py \
 
 Optional flags: `--skip_sft`, `--skip_sega`.
 
-> The public trainers ship as a **GEM-style skeleton** (same module layout as [SNOWTEAM2023/GEM](https://github.com/SNOWTEAM2023/GEM)). Wire the Qwen-VL chat template + generate/score hooks in `src/sft_trainer.py` and `src/gem_trainer.py` for full reproduction; scoring math lives in `src/entropy_scorer.py`.
+SFT is next-token cross-entropy on `chosen` (prompt tokens masked). SEGA samples `k` answers and updates with the group-standardized reward `r = -H_final + λ H_fork` (75%/80% fork split). Pass a local Qwen3-VL directory with `--model_name`.
 
 ---
 

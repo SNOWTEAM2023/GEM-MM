@@ -1,9 +1,8 @@
-"""Entropy-guided token scoring for GEM-MM.
+"""Entropy reward from the Qwen3-VL GEM-MM run.
 
-Reward (paper):
-  r(y) = - mean(H_final) + λ * mean(top-ρ fork entropies on the CoT span)
+If the response contains "Final Answer", the fork/final cut is 75% of the
+tokens; otherwise 80%. The cut is a length fraction, not the marker index.
 """
-
 from __future__ import annotations
 
 import torch
@@ -13,7 +12,6 @@ import torch.nn.functional as F
 class EntropyScorer:
     def __init__(self, config, tokenizer_or_processor):
         self.config = config
-        # AutoProcessor or AutoTokenizer both expose .tokenizer / decode
         self.processor = tokenizer_or_processor
         self.tokenizer = getattr(tokenizer_or_processor, "tokenizer", tokenizer_or_processor)
 
@@ -30,28 +28,23 @@ class EntropyScorer:
 
         token_entropies = self.compute_entropy(response_logits)
         full_text = self.tokenizer.decode(response_ids, skip_special_tokens=True)
-
-        # Prefer an explicit Final Answer marker; else use a fractional split
-        # matching the paper's fork / final partition.
-        if "Final Answer" in full_text:
-            split_idx = int(len(token_entropies) * 0.75)
-        else:
-            split_idx = int(len(token_entropies) * 0.8)
-        split_idx = max(1, min(split_idx, len(token_entropies) - 1))
+        # Training split: 75% if "Final Answer" is in the text, else 80%.
+        frac = 0.75 if "Final Answer" in full_text else 0.80
+        split_idx = int(len(token_entropies) * frac)
+        split_idx = max(0, min(split_idx, len(token_entropies)))
 
         h_cot = token_entropies[:split_idx]
         h_final = token_entropies[split_idx:]
-
         score_final = (
             torch.mean(h_final)
             if len(h_final) > 0
             else torch.tensor(5.0, device=logits.device)
         )
-
         score_cot = torch.tensor(0.0, device=logits.device)
         if len(h_cot) > 0:
             m = max(1, int(len(h_cot) * self.config.top_m_ratio))
-            top_m_vals, _ = torch.topk(h_cot, min(m, len(h_cot)))
+            m = min(m, len(h_cot))
+            top_m_vals, _ = torch.topk(h_cot, m)
             score_cot = torch.mean(top_m_vals)
 
-        return -score_final + (self.config.lambda_weight * score_cot)
+        return (-score_final) + (self.config.lambda_weight * score_cot)
