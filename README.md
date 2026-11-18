@@ -9,7 +9,7 @@
 
 💻 This is the official implementation of **GEM-MM**: Entropy-Guided Preference Alignment for Vision-Language Models.
 
-🧬 **GEM-MM** extends [**GEM**](https://github.com/SNOWTEAM2023/GEM) ([AAAI 2026 oral](https://aaai.org/conference/aaai/aaai-26/), [arXiv:2511.13007](https://arxiv.org/abs/2511.13007)) from text-only LLMs to **vision-language models**. Instead of consuming offline preference pairs with a sequence-level DPO-style loss, GEM-MM samples on-policy chain-of-thought candidates, scores them with a **fork / final entropy reward**, and updates the full VLM with **SEGA** (group-normalized policy gradients).
+🧬 **GEM-MM** extends [**GEM**](https://github.com/SNOWTEAM2023/GEM) ([AAAI 2026 oral](https://aaai.org/conference/aaai/aaai-26/), [arXiv:2611.20016](https://arxiv.org/abs/2611.20016)) from text-only LLMs to **vision-language models**. Instead of consuming offline preference pairs with a sequence-level DPO-style loss, GEM-MM samples on-policy chain-of-thought candidates, scores them with a **fork / final entropy reward**, and updates the full VLM with **SEGA** (group-normalized policy gradients).
 
 #### Authors
 Yuanshan Chua, [Xuejiao Zhao*](https://ixuejiaozhao.github.io/)
