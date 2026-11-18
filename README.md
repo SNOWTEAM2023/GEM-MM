@@ -3,13 +3,13 @@
 
 <p align="center">
   <a href="https://github.com/SNOWTEAM2023/GEM"><img src="https://img.shields.io/badge/Parent-GEM-0B3D5C" alt="Parent GEM"></a>
-  <a href="https://arxiv.org/abs/2511.13007"><img src="https://img.shields.io/badge/GEM_Paper-ArXiv-red" alt="GEM arXiv"></a>
+  <a href="https://arxiv.org/abs/2611.20016"><img src="https://img.shields.io/badge/GEM--MM__Paper-ArXiv-red" alt="GEM arXiv"></a>
   <a href="LICENCE.txt"><img src="https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey" alt="License"></a>
 </p>
 
 💻 This is the official implementation of **GEM-MM**: Entropy-Guided Preference Alignment for Vision-Language Models.
 
-🧬 **GEM-MM** extends [**GEM**](https://github.com/SNOWTEAM2023/GEM) ([AAAI 2026 oral](https://aaai.org/conference/aaai/aaai-26/), [arXiv:2611.20016](https://arxiv.org/abs/2611.20016)) from text-only LLMs to **vision-language models**. Instead of consuming offline preference pairs with a sequence-level DPO-style loss, GEM-MM samples on-policy chain-of-thought candidates, scores them with a **fork / final entropy reward**, and updates the full VLM with **SEGA** (group-normalized policy gradients).
+🧬 **GEM-MM** extends [**GEM**](https://github.com/SNOWTEAM2023/GEM) ([AAAI 2026 oral](https://aaai.org/conference/aaai/aaai-26/), [arXiv:2511.13007](https://arxiv.org/abs/2511.13007) from text-only LLMs to **vision-language models**. Instead of consuming offline preference pairs with a sequence-level DPO-style loss, GEM-MM samples on-policy chain-of-thought candidates, scores them with a **fork / final entropy reward**, and updates the full VLM with **SEGA** (group-normalized policy gradients).
 
 #### Authors
 Yuanshan Chua, [Xuejiao Zhao*](https://ixuejiaozhao.github.io/)
