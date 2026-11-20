@@ -1,5 +1,5 @@
 
-<h1 align="center">GEM-MM: Entropy-Guided Preference Alignment for Vision-Language Models</h1>
+<h1 align="center">GEM-MM: Reducing VLM Hallucination with Entropy-Guided Preference Alignment</h1>
 
 <p align="center">
   <a href="https://github.com/SNOWTEAM2023/GEM"><img src="https://img.shields.io/badge/Parent-GEM-0B3D5C" alt="Parent GEM"></a>
@@ -7,7 +7,7 @@
   <a href="LICENCE.txt"><img src="https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey" alt="License"></a>
 </p>
 
-💻 This is the official implementation of **GEM-MM**: Entropy-Guided Preference Alignment for Vision-Language Models.
+💻 This is the official implementation of [**GEM-MM**: Reducing VLM Hallucination with Entropy-Guided Preference Alignment](https://arxiv.org/abs/2611.20016).
 
 🧬 **GEM-MM** extends [**GEM**](https://github.com/SNOWTEAM2023/GEM) ([AAAI 2026 oral](https://aaai.org/conference/aaai/aaai-26/), [arXiv:2511.13007](https://arxiv.org/abs/2511.13007) from text-only LLMs to **vision-language models**. Instead of consuming offline preference pairs with a sequence-level DPO-style loss, GEM-MM samples on-policy chain-of-thought candidates, scores them with a **fork / final entropy reward**, and updates the full VLM with **SEGA** (group-normalized policy gradients).
 
@@ -21,9 +21,11 @@ Yuanshan Chua, [Xuejiao Zhao*](https://ixuejiaozhao.github.io/)
 ---
 
 ## 🔥 News
-* **[2026.07]** Public code skeleton, demo data, and README released.
-* Paper draft under preparation (MM-RLHF fair-budget bake-off).
 
+* **[2026.11]** Please check the latest paper version of **GEM-MM** on [arXiv](https://arxiv.org/abs/2611.20016).
+* **[2026.09]** **GEM-MM** has been accepted by [AI4GOOD@NeurIPS'26](https://trustworthy-ai-for-good.github.io/)! 🥳
+* **[2026.07]** We release the official implementation of **GEM-MM**. 💪 Have a try!
+* **[2026.06]** Yuanshan began his [TAISP](https://www.ntu.edu.sg/admissions/undergraduate/undergraduate-programme/turing-ai-scholars-programme) Summer Internship at the [ANGEL lab](https://www.ntu.edu.sg/news/detail/new-alibaba-ntu-corporate-lab-to-advance-green-digital-technologies).
 ---
 
 ## 🧭 Framework Overview
@@ -199,12 +201,14 @@ Please cite **both** this work and the original GEM paper when appropriate.
 ## 📖 Citation
 
 ```bibtex
-@misc{gemmm2026,
-  title        = {{GEM-MM}: Entropy-Guided Preference Alignment for Vision-Language Models},
-  author       = {Chua, Yuanshan and Zhao, Xuejiao},
-  year         = {2026},
-  howpublished = {\url{https://github.com/Y0306S/GEM-MM}},
-  note         = {Code and resources}
+@misc{chua2026gemmmreducingvlmhallucination,
+      title={GEM-MM: Reducing VLM Hallucination with Entropy-Guided Preference Alignment}, 
+      author={Yuanshan Chua and Xuejiao Zhao},
+      year={2026},
+      eprint={2611.20016},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2611.20016}, 
 }
 
 @inproceedings{zhao2026gem,
